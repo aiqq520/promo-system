@@ -4,6 +4,9 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { getAuthorization, goToLogin } from '@/utils/user'
+import serverHost from './hostName'
+
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -21,6 +24,17 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
+
+const businessMessage = {
+  100000000: '参数异常',
+  100000001: '状态异常',
+  100000002: '业务异常',
+  100000003: '未登录',
+  100000004: '用户不存在',
+  100000005: '未授权',
+  100000999: '系统异常'
+}
+
 /**
  * 异常处理程序
  */
@@ -51,6 +65,82 @@ const errorHandler = (error) => {
 const request = extend({
   errorHandler,
   // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  // credentials: 'include', // 默认请求是否带上cookie
 });
+
+request.use(async (ctx, next) => {
+  await next()
+
+  const { options } = ctx.req;
+  // 文件流，直接返回
+  if (options.responseType === 'arrayBuffer') {
+    ctx.res = {
+      code: 1,
+      status: 1,
+      success: true,
+      data: ctx.res
+    }
+    return;
+  }
+
+  const result = ctx.res;
+  const { status } = result;
+  const success = status === 1;
+
+  ctx.res = {
+    ...result,
+    success
+  };
+});
+
+// 处理业务层请求
+request.interceptors.request.use((url, options) => {
+  // 这里作为外部地址处理
+  if (/^http(s)?:\/\//.test(url)) {
+    return {
+      url,
+      options,
+    };
+  }
+
+  return {
+    url: `${serverHost}${url}`,
+    options: {
+      ...options,
+      headers: {
+        ...options.headers,
+        token: getAuthorization() || ''
+      },
+      credentials: 'include'
+    }
+  }
+});
+
+// 处理业务层想要
+request.interceptors.response.use(async (response, options) => {
+  const { responseType } = (options || {})
+  if (responseType === 'arrayBuffer') {
+    return response
+  }
+
+  // application/json
+  if (response.status === 200) {
+    const result = await response.clone().json()
+    const { status, code, message } = result;
+    if (status === 0 && code !== 1) {
+      notification.error({
+        description: businessMessage[code],
+        message: message || '未知错误'
+      })
+    }
+
+    // 未登录或登录过期，这里跳转到登录页面
+    if (code === 100000003) {
+      goToLogin();
+    }
+  }
+
+  return response
+})
+
 export default request;

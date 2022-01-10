@@ -1,10 +1,20 @@
 import request from '@/utils/request';
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+
+/**
+ * 登录
+ */
+export async function login(params) {
+  return request('/auth/login', {
     method: 'POST',
     data: params,
   });
 }
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/login/captcha?mobile=${mobile}`);
+
+/**
+ * 退出
+ */
+export async function logout() {
+  return request('/auth/logout', {
+    method: 'POST',
+  })
 }

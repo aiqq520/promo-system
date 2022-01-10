@@ -1,3 +1,13 @@
+export {
+  inputTypeMap,
+  inputTypeSelectData,
+} from '@/common/constants'
+
+export const keyEditTitleMap = {
+  add: '新增属性项',
+  edit: '编辑属性项',
+}
+
 export const propertyKeyTypeMap = {
   isSellProperty: '销售',
   isGoodsProperty: '商品',
@@ -8,12 +18,10 @@ export const modifyTypeMap = {
   '2': '不可修改',
 }
 
-export const inputTypeMap = {
-  '1': '单选(不可自定义)',
-  '2': '单选(允许自定义)',
-  '3': '多选(不可自定义)',
-  '4': '多选(允许自定义)',
-  '5': '文本输入框',
-  '6': '日期选择器',
-  '7': '时间选择器',
-}
+export const modifyTypeRadioData =
+  Object.keys(modifyTypeMap).map(key => {
+    return {
+      value: key,
+      label: `${modifyTypeMap[key]}`,
+    }
+  })

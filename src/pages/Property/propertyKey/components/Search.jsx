@@ -1,13 +1,25 @@
 import React, { Component } from 'react'
-// import SearchGroup from '@/components/SearchGroup'
-
+import SearchGroup from '@/components/SearchGroup'
 
 export default class SearchBar extends Component {
   constructor(props) {
     super(props)
   }
 
+  onSearch = query => {
+    this.props.onSearch(query)
+  }
+
+  onReset = () => {
+    this.props.onReset()
+  }
+
+  searchHandle = value => {
+    this.props.searchHandle(value)
+  }
+
   render() {
+    const { propertyList } = this.props
     const sourceData = [
       {
         key: 'id',
@@ -17,19 +29,19 @@ export default class SearchBar extends Component {
           placeholder: '请输入属性项ID',
         }
       },
-      // {
-      //   key: 'name',
-      //   type: 'inputWithResult',
-      //   label: '属性项名称',
-      //   valueKey: 'code',
-      //   labelKey: 'name',
-      //   // onSearch: this.searchPropertyListHandle,
-      //   antdOptions: {
-      //     placeholder: '属性项名称',
-      //     filterOption: false,
-      //   },
-      //   data: propertyList
-      // },
+      {
+        key: 'name',
+        type: 'inputWithResult',
+        label: '属性项名称',
+        valueKey: 'code',
+        labelKey: 'name',
+        onSearch: this.searchHandle,
+        antdOptions: {
+          placeholder: '属性项名称',
+          filterOption: false,
+        },
+        data: propertyList
+      },
       {
         key: 'properties',
         type: 'checkbox',
@@ -47,10 +59,11 @@ export default class SearchBar extends Component {
     ]
 
     return (
-      // <SearchGroup
-      //   sourceData={sourceData}
-      // />
-      <div></div>
+      <SearchGroup
+        sourceData={sourceData}
+        onSubmit={this.onSearch}
+        onReset={this.onReset}
+      />
     )
   }
 }

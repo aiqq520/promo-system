@@ -1,8 +1,10 @@
-import { stringify } from 'querystring';
 import { router } from 'umi';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
+import { message } from 'antd';
+import { login, logout } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { setAuthorization, clearAuthorization, goToLogin } from '@/utils/user';
+
 const Model = {
   namespace: 'login',
   state: {
@@ -10,17 +12,33 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(login, payload);
+      // 预处理数据结构，符合antd design pro
+      const isSuccess = response.success && response.status === 1;
+      const result = {
+        status: isSuccess ? 'ok' : 'error',
+        currentAuthority: 'user'
+      }
+
+      // 登录成功
+      if (isSuccess) {
+        setAuthorization(response.data)
+      } else {
+        clearAuthorization()
+      }
+
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
+        payload: result,
+      });
 
-      if (response.status === 'ok') {
+      // Login successfully
+      if (result.status === 'ok') {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        let { redirect } = params;
+        message.success('🎉 🎉 🎉  登录成功！');
 
+        let { redirect } = params;
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 
@@ -40,27 +58,32 @@ const Model = {
       }
     },
 
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
-    },
+    *logout(_, { call, put }) {
+      // const { redirect } = getPageQuery(); // Note: There may be security issues, please note
+      const response = yield call(logout)
+      if (!response.success) return;
 
-    logout() {
-      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
+      message.success('退出登录成功！');
+      // 清空登录态：比如authority
+      localStorage.clear();
 
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        router.replace({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
-      }
+      // 清除用户数据
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: null,
+      });
+
+      // 去登录
+      goToLogin()
     },
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      return {
+        ...state,
+        status: payload.status
+      };
     },
   },
 };

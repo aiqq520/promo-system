@@ -1,11 +1,13 @@
-import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import {
+  // DefaultFooter,
+  getMenuData,
+  getPageTitle
+} from '@ant-design/pro-layout';
 import { Helmet } from 'react-helmet';
 import { Link } from 'umi';
 import React from 'react';
 import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
-import SelectLang from '@/components/SelectLang';
-import logo from '../assets/logo.svg';
+// import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
 const UserLayout = (props) => {
@@ -25,7 +27,6 @@ const UserLayout = (props) => {
   const title = getPageTitle({
     pathname: location.pathname,
     breadcrumb,
-    formatMessage,
     ...props,
   });
   return (
@@ -36,22 +37,19 @@ const UserLayout = (props) => {
       </Helmet>
 
       <div className={styles.container}>
-        <div className={styles.lang}>
-          <SelectLang />
-        </div>
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                {/* <img alt="logo" className={styles.logo} src={logo} /> */}
+                <span className={styles.title}>CINDA PROMO</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>后台管理系统</div>
           </div>
           {children}
         </div>
-        <DefaultFooter />
+        {/* <DefaultFooter /> */}
       </div>
     </>
   );

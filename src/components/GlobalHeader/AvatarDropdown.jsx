@@ -1,8 +1,7 @@
 import { Avatar, Icon, Menu, Spin } from 'antd';
-import { FormattedMessage } from 'umi-plugin-react/locale';
 import React from 'react';
 import { connect } from 'dva';
-import { router } from 'umi';
+// import { router } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -19,33 +18,33 @@ class AvatarDropdown extends React.Component {
         });
       }
 
-      return;
+      // return;
     }
 
-    router.push(`/account/${key}`);
+    // router.push(`/account/${key}`);
   };
 
   render() {
     const {
       currentUser = {
         avatar: '',
-        name: '',
+        username: '',
       },
-      menu,
+      // menu,
     } = this.props;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <Menu.Item key="logout">
           <Icon type="logout" />
-          <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
+          退出登录
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.name ? (
+    return currentUser && currentUser.username ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={styles.name}>{currentUser.name}</span>
+          <span className={styles.name}>{currentUser.username}</span>
         </span>
       </HeaderDropdown>
     ) : (

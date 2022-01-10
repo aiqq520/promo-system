@@ -8,7 +8,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
+      target: 'http://47.110.67.16',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
@@ -17,16 +17,16 @@ export default {
   },
   test: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
+      target: 'http://47.110.67.16',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
       },
     },
   },
-  pre: {
+  prod: {
     '/api/': {
-      target: 'your pre url',
+      target: 'http://47.110.67.16',
       changeOrigin: true,
       pathRewrite: {
         '^': '',

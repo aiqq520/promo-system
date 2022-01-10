@@ -1,22 +1,25 @@
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
+import React from 'react';
+import ProLayout from '@ant-design/pro-layout';
 import { Link } from 'umi';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+
 const noMatch = (
   <Result
     status={403}
     title="403"
-    subTitle="Sorry, you are not authorized to access this page."
+    subTitle="对不起，您没有权限访问此页面。"
     extra={
-      <Button type="primary">
-        <Link to="/user/login">Go Login</Link>
-      </Button>
+      window.location.pathname === '/' ? null : (
+        <Button type="primary">
+          <Link to="/">返回首页</Link>
+          {/* <Link to="/user/login">返回首页</Link> */}
+        </Button>
+      )
     }
   />
 );
@@ -29,39 +32,6 @@ const menuDataRender = (menuList) =>
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null);
   });
-
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright={`${new Date().getFullYear()} Cinda Promo`}
-    links={[]}
-  />
-);
-
-const footerRender = () => {
-  if (!isAntDesignPro()) {
-    return defaultFooterDom;
-  }
-
-  return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-};
 
 const BasicLayout = (props) => {
   const {
@@ -76,13 +46,13 @@ const BasicLayout = (props) => {
    * constructor
    */
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'user/fetchCurrent',
+  //     });
+  //   }
+  // }, []);
   /**
    * init variables
    */
@@ -102,15 +72,21 @@ const BasicLayout = (props) => {
   return (
     <ProLayout
       logo={logo}
-      menuHeaderRender={(logoDom, titleDom) => (
-        <Link to="/">
-          {logoDom}
-          {titleDom}
-        </Link>
-      )}
+      // menuHeaderRender={(logoDom, titleDom) => (
+      //   <Link to="/">
+      //     {logoDom}
+      //     {titleDom}
+      //   </Link>
+      // )}
       onCollapse={handleMenuCollapse}
+      // onMenuHeaderClick={() => history.push('/')}
       menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
+        if (
+          menuItemProps.isUrl ||
+          // menuItemProps.children ||
+          !menuItemProps.path ||
+          location.pathname === menuItemProps.path
+        ) {
           return defaultDom;
         }
 
@@ -119,10 +95,7 @@ const BasicLayout = (props) => {
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: formatMessage({
-            id: 'menu.home',
-            defaultMessage: 'Home',
-          }),
+          breadcrumbName: '首页',
         },
         ...routers,
       ]}
@@ -134,9 +107,7 @@ const BasicLayout = (props) => {
           <span>{route.breadcrumbName}</span>
         );
       }}
-      footerRender={footerRender}
       menuDataRender={menuDataRender}
-      formatMessage={formatMessage}
       rightContentRender={() => <RightContent />}
       {...props}
       {...settings}
