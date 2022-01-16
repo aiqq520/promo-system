@@ -113,6 +113,6 @@ export default {
     basePath: '/',
   },
   proxy: proxy[UMI_ENV || 'dev'],
-  // publicPath
+  publicPath: '/h5/cinda-promo/master/' || './',
   chainWebpack: webpackPlugin,
 };

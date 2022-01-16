@@ -1,43 +1,27 @@
+/* eslint-disable */
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { SelectShell, InputWithResult, CascaderEcho } from './comps'
-import { Input, Checkbox, Button, Form, DatePicker, Row, Col } from 'antd'
-import utils from './utils/index'
-import styles from './index.less'
+import { Input, Button, Form, Row, Col, Select } from 'antd'
 
 const FormItem = Form.Item
-const CheckboxGroup = Checkbox.Group
+
 const formlayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 }
-const searchGroupLayout = {
-  xxl: 6,
-  xl: 8,
-  lg: 12,
-  col: 24,
-}
 
 const filterUndefined = params => {
-  Object.keys(params).forEach(key => {
-    if (params[key] === undefined) {
+  params && Object.keys(params).forEach(key => {
+    if (params[key] === undefined || params[key] === '') {
       delete params[key]
     }
   })
+
   return params
 }
 
 class SearchGroup extends Component {
   state = {
     btnLoading: false
-  }
-
-  static propTypes = {
-    form: PropTypes.object,
-    onSubmit: PropTypes.func,
-    onReset: PropTypes.func,
-    onExport: PropTypes.func,
-    sourceData: PropTypes.array.isRequired,
   }
 
   getParams = () => {
@@ -49,7 +33,7 @@ class SearchGroup extends Component {
     e.preventDefault()
     const { onSubmit } = this.props
     const params = this.getParams()
-    const searchObj = utils.filterSearchObj(params)
+    const searchObj = filterUndefined(params)
     onSubmit && onSubmit(searchObj)
   }
 
@@ -77,91 +61,70 @@ class SearchGroup extends Component {
 
   render() {
     const { btnLoading } = this.state
-    const { sourceData, form: { getFieldDecorator } } = this.props
+    const { configs, extendBtnsConfigs, form } = this.props
+    const { getFieldDecorator, getFieldsValue } = form
 
     return (
-      <Form>
-        <Row>
-          {sourceData && sourceData.map(item => {
-            const { type, label, key, initialValue, antdOptions } = item
-            const options = {
-              rules: item.rules
-            }
-            if (initialValue !== undefined) {
-              options.initialValue = initialValue
-            }
+      <Row className='search-form'>
+        <Form>
+          <Row gutter={24}>
+            {configs && configs.map(item => {
+              const { type, label, key, decorator, antdOptions, colSpan, items } = item
 
-            return (
-              <Col key={key} {...searchGroupLayout}>
-                <FormItem
-                  label={(label && <span>{label}</span>)}
-                  {...formlayout}
-                >
-                  {getFieldDecorator(key, options)(
-                    (() => {
-                      switch (type) {
-                        case 'input':
-                          return <Input {...antdOptions}></Input>
-                        case 'select':
-                          return (
-                            <SelectShell propKey={key} {...item} ></SelectShell>
-                          )
-                        case 'inputWithResult':
-                          return (
-                            <InputWithResult propKey={key} {...item}></InputWithResult>
-                          )
-                        case 'cascader':
-                          return (
-                            <CascaderEcho ref={ref => this.cascaderRef = ref} {...item} />
-                          )
-                        case 'checkbox':
-                          return (
-                            <CheckboxGroup {...antdOptions} options={item.data}></CheckboxGroup>
-                          )
-                        case 'dateTime':
-                          return (
-                            <DatePicker
-                              {...antdOptions}
-                              showTime={true}
-                            />
-                          )
-                        default:
-                          return <Input {...antdOptions}></Input>
-                      }
-                    })()
-                  )}
-                </FormItem>
-              </Col>
-            )
-          })}
-        </Row>
+              return (
+                <Col span={colSpan || 6} key={key}>
+                  <FormItem
+                    label={(label && <span>{label}</span>)}
+                    {...formlayout}
+                  >
+                    {getFieldDecorator(key, { ...decorator })(
+                      (() => {
+                        switch (type) {
+                          case 'input':
+                            return <Input {...antdOptions} placeholder={label && `请输入${label}`} />
+                          case 'select':
+                            return (
+                              <Select {...antdOptions} placeholder={label && `请选择${label}`}>
+                                {items && items.map((v, i) => (
+                                  <Select.Option value={v.value} key={i}>{v.label}</Select.Option>
+                                ))}
+                              </Select>
+                            )
+                          default:
+                            return <Input {...antdOptions}></Input>
+                        }
+                      })()
+                    )}
+                  </FormItem>
+                </Col>
+              )
+            })}
+          </Row>
 
-        <FormItem className={styles.buttonRow}>
-          <Button
-            type='primary'
-            className={styles.btn}
-            onClick={this.searchHandle}
-          >
-            查询
+          <Row style={{ textAlign: 'right', marginBottom: 12 }}>
+            <Button type='primary' onClick={this.searchHandle.bind(this)}>
+              查询
             </Button>
-          <Button
-            className={styles.btn}
-            onClick={this.resetHandle}
-          >
-            重置
+            <Button style={{ marginLeft: 10 }} onClick={this.resetHandle.bind(this)}>
+              重置
             </Button>
-          {
-            this.props.onExport &&
-            <Button
-              className={styles.btn}
-              onClick={this.exportHandle}
-              loading={btnLoading}
-            >
-              导出
-              </Button>
-          }
-        </FormItem>
-      </Form>
+
+            {extendBtnsConfigs &&
+              extendBtnsConfigs.map((config, i) => {
+                let { antd, buttonText, handle } = config
+                const values = filterUndefined(getFieldsValue())
+
+                return <Button {...antd} onClick={() => handle(values)} key={i} style={{ marginLeft: 8 }}>{buttonText}</Button>
+              })}
+            {
+              this.props.onExport &&
+                <Button onClick={this.exportHandle} loading={btnLoading}>
+                  导出
+                </Button>
+            }
+          </Row>
+        </Form>
+      </Row>
     )
   }
 }

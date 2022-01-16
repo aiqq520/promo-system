@@ -37,53 +37,25 @@ export default [
                 path: '/index',
                 name: '欢迎',
                 icon: 'smile',
-                component: './home',
+                component: './index',
                 // hideInMenu: true,
               },
               {
-                name: '属性管理',
-                icon: 'appstore',
-                path: '/property',
-                routes: [
-                  {
-                    name: '属性项列表',
-                    path: '/property/propertyKey',
-                    component: './Property/propertyKey'
-                  },
-                  {
-                    name: '属性值列表',
-                    path: '/property/propertyValue',
-                    component: './Property/propertyValue'
-                  }
-                ]
-              },
-              {
-                name: '类目管理',
+                name: '商品管理',
                 icon: 'database',
-                path: '/category',
-                routes: [
-                  {
-                    name: '类目属性管理',
-                    path: '/category/property',
-                    component: './Category/property'
-                  },
-                  {
-                    name: '类目经营者列表',
-                    path: '/category/manager',
-                    component: './Category/manager'
-                  },
-                  {
-                    name: '类目管理',
-                    path: '/category/move',
-                    component: './Category/move'
-                  }
-                ],
+                path: '/item/list',
+                component: './item/list'
               },
+              // {
+              //   path: '/item/detail',
+              //   component: './item/detail',
+              //   hideInMenu: true
+              // },
               {
                 name: '前台类目',
                 icon: 'tags',
-                path: '/frontCategory',
-                component: './FrontCategory'
+                path: '/front/category',
+                component: './front/category'
               },
               // {
               //   name: '基础配置',
@@ -94,8 +66,8 @@ export default [
               {
                 name: '首页配置',
                 icon: 'home',
-                path: '/indexConfig',
-                component: './IndexConfig'
+                path: '/home/page',
+                component: './home/page'
               },
               {
                 component: './404',
