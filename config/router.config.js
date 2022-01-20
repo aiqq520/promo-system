@@ -46,11 +46,12 @@ export default [
                 path: '/item/list',
                 component: './item/list'
               },
-              // {
-              //   path: '/item/detail',
-              //   component: './item/detail',
-              //   hideInMenu: true
-              // },
+              {
+                name: '商品配置',
+                path: '/item/detail',
+                component: './item/detail',
+                hideInMenu: true
+              },
               {
                 name: '前台类目',
                 icon: 'tags',
@@ -68,6 +69,12 @@ export default [
                 icon: 'home',
                 path: '/home/page',
                 component: './home/page'
+              },
+              {
+                name: '基础数据',
+                icon: 'read',
+                path: '/basedata/list',
+                component: './basedata/list'
               },
               {
                 component: './404',

@@ -50,6 +50,10 @@ class FormGroup extends Component {
                       return (
                         <UploadImage />
                       )
+                    case 'textarea':
+                      return (
+                        <Input.TextArea {...antdOptions} placeholder={label && `请输入${label}`} rows={4} />
+                      )
                     default:
                       return <Input {...antdOptions} />
                   }

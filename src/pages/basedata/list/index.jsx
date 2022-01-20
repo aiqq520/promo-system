@@ -1,44 +1,34 @@
-/* eslint-disable */
 import React, { useState, useEffect } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { router } from 'umi';
-import { Card, Button, Table, message } from 'antd'
+import { Card, Tabs, Button, Table, message } from 'antd'
 import SearchGroup from '@/components/SearchGroup'
-import { searchConfigs, getColumnConfigs } from './config'
-import { queryItemList, postDelete } from '@/services/item'
-import { queryCategoryList } from '@/services/category'
+import EditModal from './component/EditModal'
+import { queryBaseDataList, postDelete } from '@/services/basedata'
+import { searchConfigs, getColumnConfigs, typeMap } from './config/index'
 
-function ItemList() {
+const { TabPane } = Tabs;
+
+function BaseData() {
   const [total, setTotal] = useState(0)
   const [pageSize, setPageSize] = useState(20)
   const [pageIndex, setPageIndex] = useState(1)
   const [dataSource, setDataSource] = useState([])
-  const [searchParams, setSearchParams] = useState({})
   const [loading, setLoading] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [dataInfo, setDataInfo] = useState({})
+  const [activeKey, setActiveKey] = useState('1') // 默认tab key
+  const [searchParams, setSearchParams] = useState({})
 
-  const [categoryList, setCategoryList] = useState([]) // 类别list
-
-  // 获取类目
-  const getEmunList = async () => {
-    const params = { page: 1, size: 100 }
-    const res = await queryCategoryList(params)
-    const { rows } = (res && res.data || {})
-    const arr = rows && rows.map(item => ({ value: item.id, label: item.name })) || []
-    setCategoryList(arr)
-  }
-
-  useEffect(() => {
-    getEmunList()
-  }, [])
-
+  // 获取列表
   const getDataList = async () => {
     setLoading(true)
     const params = {
       page: pageIndex,
       size: pageSize,
+      type: activeKey && Number(activeKey),
       ...searchParams
     }
-    const res = await queryItemList(params)
+    const res = await queryBaseDataList(params)
     const { count, rows } = (res && res.data || {})
     setLoading(false)
     setTotal(count || 0)
@@ -47,7 +37,7 @@ function ItemList() {
 
   useEffect(() => {
     getDataList()
-  }, [pageSize, pageIndex, searchParams])
+  }, [pageSize, pageIndex, searchParams, activeKey])
 
   const pageHandle = (pagination) => {
     setPageIndex(pagination.current)
@@ -65,21 +55,29 @@ function ItemList() {
     onSearch({})
   }
 
-  const handleAdd = () => {
-    router.push('/item/detail')
-  }
-
   const handle = async (type, record) => {
-    if (type === 'edit') { // 编辑
-      router.push(`/item/detail?id=${record.id}`)
+    if (type === 'edit') {
+      setVisible(true)
+      setDataInfo(record)
     }
 
-    if (type === 'delete') { // 删除
+    if (type === 'delete') {
       const res = await postDelete(record.id)
-      if(!res || !res.success) return
+      if (!res || !res.success) return
       message.success('操作成功')
       getDataList()
     }
+  }
+
+  // tab change事件
+  const onChange = (key) => {
+    setPageIndex(1)
+    setActiveKey(key)
+  }
+
+  const cancel = () => {
+    setVisible(false)
+    setDataInfo({})
   }
 
   const pagination = {
@@ -87,39 +85,52 @@ function ItemList() {
     pageSize,
     current: pageIndex,
     showSizeChanger: true,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     showTotal: total => `共${total}条`,
   }
 
   return (
     <PageHeaderWrapper title={false}>
       <SearchGroup
-        configs={searchConfigs(categoryList)}
+        configs={searchConfigs}
         onSubmit={onSearch}
         onReset={onReset}
       />
 
       <Card bordered={false}>
-        <div className='table-bar'>
-          <div className='table-bar-title'>商品列表</div>
+        <div className="table-bar">
+          <div className="table-bar-title">数据配置</div>
           <div>
-            <Button type='primary' onClick={handleAdd}>新增</Button>
+            <Button type='primary' onClick={() => setVisible(true)}>新增</Button>
           </div>
         </div>
 
+        <Tabs activeKey={activeKey} onChange={onChange}>
+          {typeMap && Object.keys(typeMap).map(item => (
+            <TabPane tab={typeMap[item]} key={item} />
+          ))}
+        </Tabs>
+
         <Table
-          bordered
           loading={loading}
           columns={getColumnConfigs(handle)}
           dataSource={dataSource}
           pagination={pagination}
           onChange={pageHandle}
           rowKey='id'
-          scroll={{ x: 2600 }}
         />
       </Card>
 
+      {visible &&
+        <EditModal
+          visible={visible}
+          dataInfo={dataInfo}
+          success={() => getDataList()}
+          cancel={cancel}
+        />
+      }
     </PageHeaderWrapper>
   )
 }
 
-export default ItemList
+export default BaseData

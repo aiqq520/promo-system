@@ -20,6 +20,10 @@ function FromElement(props) {
     if (dataInfo && dataInfo.id) {
       const arr = JSON.parse(JSON.stringify(dataInfo))
       const { categoryConfig, newItemConfig, topSaleConfig, youMayLikeConfig, bannerConfig } = (arr || {})
+      const list = bannerConfig && JSON.parse(bannerConfig)
+
+      arr.banner = list && list.map(item => item.image)
+      arr.site = list && list.map(item => item.website)
       arr.categoryConfig = categoryConfig &&
         categoryConfig.split(',').map(item => item && Number(item))
       arr.newItemConfig = newItemConfig &&
@@ -28,7 +32,6 @@ function FromElement(props) {
         topSaleConfig.split(',').map(item => item && Number(item))
       arr.youMayLikeConfig = youMayLikeConfig &&
         youMayLikeConfig.split(',').map(item => item && Number(item))
-      arr.bannerConfig = bannerConfig && JSON.parse(bannerConfig).map(item => item.image).filter(item => !!item) || undefined
       setInitialInfo(arr)
     }
   }, [props.dataInfo])
@@ -37,22 +40,27 @@ function FromElement(props) {
     const { validateFields } = formRef.current.props.form
     validateFields(async (err, values) => {
       if(err) return
-      const { bannerConfig } = (values || {})
-      const list = bannerConfig && bannerConfig.map(item => ({
-        image: (item.response ? item.response.url : item.url) || item,
-        website: 'www.baidu.com'
+
+      const data = JSON.parse(JSON.stringify(values))
+      const { categoryConfig, newItemConfig, topSaleConfig, youMayLikeConfig, banner, site } = (data || {})
+      const arr = site && site.toString().split(',').filter(item => item)
+      const list = banner && banner.map((item, i) => ({
+        image: item,
+        website: arr[i] || ''
       }))
 
-      values.categoryConfig = values.categoryConfig.join()
-      values.newItemConfig = values.newItemConfig.join()
-      values.topSaleConfig = values.topSaleConfig.join()
-      values.youMayLikeConfig = values.youMayLikeConfig.join()
-      values.bannerConfig = JSON.stringify(list)
+      data.categoryConfig = categoryConfig && categoryConfig.join()
+      data.newItemConfig = newItemConfig && newItemConfig.join()
+      data.topSaleConfig = topSaleConfig && topSaleConfig.join()
+      data.youMayLikeConfig = youMayLikeConfig && youMayLikeConfig.join()
+      data.bannerConfig = JSON.stringify(list)
+      delete data.banner
+      delete data.site
 
-      values.id = dataInfo && dataInfo.id || undefined
+      data.id = dataInfo && dataInfo.id || undefined
       const isUpdate = !!(dataInfo && dataInfo.id)
       setLoading(true)
-      const res = isUpdate ? await postUpdate(values) : await postSave(values)
+      const res = isUpdate ? await postUpdate(data) : await postSave(data)
       setLoading(false)
       if(!res || !res.success) return
       message.success('操作成功')

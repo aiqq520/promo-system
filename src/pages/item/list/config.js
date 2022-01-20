@@ -1,25 +1,33 @@
 import React from 'react'
 import { Button, Popconfirm } from 'antd'
 
-export const searchConfigs = [
-  {
-    key: 'categoryId',
-    label: '前台类目id',
-    type: 'input',
-  },
-  {
-    key: 'title',
-    label: '商品名称',
-    type: 'input',
-  },
-  {
-    key: 'itemSn',
-    label: '商品货号',
-    type: 'input',
-  }
-]
+export const shelfMap = {
+  0: '下架',
+  1: '上架'
+}
 
-export function getColumnConfig(handle) {
+export const searchConfigs = (categoryList) => {
+  return [
+    {
+      key: 'categoryId',
+      label: '前台类目',
+      type: 'select',
+      items: categoryList
+    },
+    {
+      key: 'title',
+      label: '商品名称',
+      type: 'input',
+    },
+    {
+      key: 'itemSn',
+      label: '商品货号',
+      type: 'input',
+    },
+  ]
+}
+
+export function getColumnConfigs(handle) {
   const columns = [
     {
       title: '商品id',
@@ -108,23 +116,28 @@ export function getColumnConfig(handle) {
       align: 'center',
       width: 120
     },
-    // {
-    //   title: '商品图片',
-    //   dataIndex: 'itemImageVOList',
-    //   align: 'center',
-    //   render: (_, record) => {
-
-    //   }
-    // },
+    {
+      title: '商品图片',
+      dataIndex: 'itemImageVOList',
+      align: 'center',
+      width: 100,
+      render: (text) => {
+        const { url } = (text && text[0] || {})
+        return (url ? <img src={url} style={{ width: 80, height: 80 }} alt=''/> : null)
+      }
+    },
+    {
+      title: '商品价格',
+      dataIndex: 'itemPriceVOList',
+      align: 'center',
+      width: 100,
+      render: (text) => {
+        return <>{text && text[0] && text[0].price}</>
+      }
+    },
     {
       title: '材质',
       dataIndex: 'material',
-      align: 'center',
-      width: 100
-    },
-    {
-      title: '装箱数量',
-      dataIndex: 'packageCount',
       align: 'center',
       width: 100
     },
@@ -147,10 +160,23 @@ export function getColumnConfig(handle) {
       width: 100
     },
     {
-      title: '上下架状态',
+      title: '状态',
       dataIndex: 'shelf',
       align: 'center',
-      width: 120
+      width: 120,
+      render: (text) => <>{shelfMap[text] || ''}</>
+    },
+    {
+      title: '装箱数量',
+      dataIndex: 'packageCount',
+      align: 'center',
+      width: 100
+    },
+    {
+      title: '装箱重量',
+      dataIndex: 'shippingWeight',
+      align: 'center',
+      width: 100
     },
     {
       title: '装箱尺寸高度',
@@ -169,12 +195,6 @@ export function getColumnConfig(handle) {
       dataIndex: 'shippingDimensionsWidth',
       align: 'center',
       width: 120
-    },
-    {
-      title: '装箱重量',
-      dataIndex: 'shippingWeight',
-      align: 'center',
-      width: 100
     },
     {
       title: '主题',

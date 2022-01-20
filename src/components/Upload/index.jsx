@@ -20,7 +20,7 @@ class UploadImage extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.value && nextProps.value !== this.props.value) {
-      this.initData(nextProps.value)
+      // this.initData(nextProps.value)
     }
   }
 
@@ -64,7 +64,8 @@ class UploadImage extends Component {
   // 状态变更
   uploadChange = ({ fileList }) => {
     this.setState({ fileList })
-    this.props.onChange(fileList)
+    const arr = fileList && fileList.map(item => (item.response ? item.response.url : item.url)).filter(item => item)
+    this.props.onChange(arr)
   }
 
   handleCustomRequest = async ({ file, onSuccess, onError }) => {

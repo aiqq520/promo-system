@@ -1,41 +1,72 @@
-import React from 'react'
-import { Card } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { router } from 'umi';
-import FormGroup from '@/components/FormGroup'
-import { getFormConfigs } from './config/index'
+import FormElement from './components/FormElement'
+import { queryCategoryList } from '@/services/category'
+import { queryBaseDataList } from '@/services/basedata'
+import { getItemInfo } from '@/services/item'
 
-const formItemLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 12 }
-}
+function ItemDetail(props) {
+  const [categoryList, setCategoryList] = useState([]) // 类目
+  const [materialList, setMaterialList] = useState([]) // 材质
+  const [themeList, setThemeList] = useState([]) // 主题
+  const [methodsList, setMethodsList] = useState([]) // 印刷方式
+  const [dataInfo, setDataInfo] = useState({})
+  const [loading, setLoading] = useState(false)
 
-const wrapperCol = {
-  xs: { span: 24, offset: 0 },
-  sm: { span: 12, offset: 4 },
-}
-
-function ItemDetail() {
-
-  const handleSubmit = (values) => {
-
+  const getEmunList = async () => {
+    const params = { page: 1, size: 100 }
+    const res = await queryCategoryList(params)
+    const { rows } = (res && res.data || {})
+    setCategoryList(rows || [])
   }
 
-  const handleReturn = () => {
+  const getBaseList = async () => {
+    const params = { page: 1, size: 10000 }
+    const res = await queryBaseDataList(params)
+    const { rows } = (res && res.data || {})
+    const list1 = rows && rows.filter(item => item.type === 1) || [] // 材质
+    const list2 = rows && rows.filter(item => item.type === 2) || [] // 主题
+    const list3 = rows && rows.filter(item => item.type === 3) || [] // 印刷方式
+
+    setMaterialList(list1)
+    setThemeList(list2)
+    setMethodsList(list3)
+  }
+
+  const getItemInfos = async () => {
+    const { id } = props.location && props.location.query
+    if (id) {
+      setLoading(true)
+      const res = await getItemInfo(id)
+      setLoading(false)
+      setDataInfo(res && res.data || {})
+    }
+  }
+
+  useEffect(() => {
+    getEmunList()
+    getBaseList()
+    getItemInfos()
+  }, [])
+
+  const handleCancel = () => {
     router.push('/item/list')
+    setDataInfo({})
   }
 
   return (
-    <Card title='商品编辑'>
-
-      {/* <FormGroup
-        showBtn
-        configs={getFormConfigs()}
-        formProps={formItemLayout}
-        btnLayout={{ wrapperCol }}
-        onCancel={handleReturn}
-        onSubmit={handleSubmit}
-      /> */}
-    </Card>
+    <>
+      <h3>商品配置</h3>
+      <FormElement
+        loading={loading}
+        dataInfo={dataInfo}
+        categoryList={categoryList}
+        materialList={materialList}
+        themeList={themeList}
+        methodsList={methodsList}
+        handleCancel={handleCancel}
+      />
+    </>
   )
 }
 

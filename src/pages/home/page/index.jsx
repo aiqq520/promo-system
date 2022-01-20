@@ -36,7 +36,7 @@ function HomePage() {
 
   // 获取枚举值
   const getEnumList = async () => {
-    const params = { page: 1, size: 20 }
+    const params = { page: 1, size: 10000 }
     const res1 = await queryItemList(params)
     const { rows } = (res1 && res1.data || {})
     const arr = rows && rows.map(item => ({ value: item.id, label: item.title })) || []
@@ -107,6 +107,7 @@ function HomePage() {
           pagination={pagination}
           onChange={pageHandle}
           rowKey='id'
+          scroll={{ x: 1400 }}
         />
 
         {visible &&

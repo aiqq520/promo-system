@@ -42,7 +42,7 @@ export async function postDelete(params) {
 /**
  * 详情
  */
-export async function getInfo(params) {
+export async function getItemInfo(params) {
   return request(`/item/info/${params}`, {
     method: 'POST',
   })
