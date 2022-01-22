@@ -132,7 +132,8 @@ export function getColumnConfigs(handle) {
       align: 'center',
       width: 100,
       render: (text) => {
-        return <>{text && text[0] && text[0].price}</>
+        const arr = text && text.map(item => item.price)
+        return <>{arr && arr.join()}</>
       }
     },
     {

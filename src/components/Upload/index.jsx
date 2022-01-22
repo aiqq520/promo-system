@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Upload, Icon, message, Modal } from 'antd'
 import { uploadFile } from '@/services/common'
-
+import { looseEqual } from '@/utils/utils';
 class UploadImage extends Component {
   constructor(props) {
     super(props)
@@ -18,11 +18,17 @@ class UploadImage extends Component {
     this.initData(this.props.value)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.value && nextProps.value !== this.props.value) {
-      // this.initData(nextProps.value)
+  UNSAFE_componentWillUpdate(nextProps) {
+    if (!looseEqual(nextProps.value, this.props.value)) {
+      this.initData(nextProps.value)
     }
   }
+
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   if (nextProps.value && !looseEqual(nextProps.value, this.props.value)) {
+  //     this.initData(nextProps.value)
+  //   }
+  // }
 
   initData(data) {
     let arr = []

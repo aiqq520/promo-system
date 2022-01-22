@@ -24,6 +24,7 @@ function FormElement(props) {
       data.itemPriceRequests = itemPriceRequests.toString().split(',').map(item => ({ price: item }))
 
       data.id = dataInfo && dataInfo.id || undefined
+      data.version = dataInfo && dataInfo.version || undefined
       const isUpdate = !!(dataInfo && dataInfo.id)
       const res = isUpdate ? await postUpdate(data) : await postSave(data)
       setBtnLoading(false)
@@ -61,7 +62,7 @@ function FormElement(props) {
                         (() => {
                           switch (type) {
                             case 'input':
-                              return <Input {...antdOptions} placeholder={label && `请输入${label}`} />
+                              return <Input placeholder={label && `请输入${label}`} {...antdOptions} />
                             case 'select':
                               return (
                                 <Select

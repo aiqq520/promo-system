@@ -82,6 +82,9 @@ export const getFormModules = (dataInfo, enmuList) => {
           decorator: {
             rules: getRules('商品价格'),
             initialValue: dataInfo && dataInfo.itemPriceRequests || undefined
+          },
+          antdOptions: {
+            placeholder: '请输入商品价格，以逗号隔开'
           }
         }
       ]

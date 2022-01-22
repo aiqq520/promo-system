@@ -39,7 +39,11 @@ function ItemDetail(props) {
       setLoading(true)
       const res = await getItemInfo(id)
       setLoading(false)
-      setDataInfo(res && res.data || {})
+      const data = JSON.parse(JSON.stringify(res && res.data)) || {}
+      const { itemImageVOList, itemPriceVOList } = (data || {})
+      data.itemImageRequestList = itemImageVOList && itemImageVOList.map(item => item.url)
+      data.itemPriceRequests = itemPriceVOList && itemPriceVOList.map(item => item.price).join()
+      setDataInfo(data)
     }
   }
 

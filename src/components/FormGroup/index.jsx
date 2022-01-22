@@ -52,7 +52,7 @@ class FormGroup extends Component {
                       )
                     case 'textarea':
                       return (
-                        <Input.TextArea {...antdOptions} placeholder={label && `请输入${label}`} rows={4} />
+                        <Input.TextArea placeholder={label && `请输入${label}`} {...antdOptions} rows={4} />
                       )
                     default:
                       return <Input {...antdOptions} />
