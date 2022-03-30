@@ -15,3 +15,11 @@ export async function deleteFile(data) {
     data
   })
 }
+
+// 上传多文件
+export async function uploadMultipleFile(data) {
+  return request('/file/uploadMul', {
+    method: 'POST',
+    data
+  })
+}

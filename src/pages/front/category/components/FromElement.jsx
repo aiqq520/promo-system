@@ -60,7 +60,7 @@ function FormElement(props) {
             rules: [{ required: true, message: '请输入关键词' }],
             initialValue: dataInfo && dataInfo.keyword || undefined
           })(
-            <Input placeholder='请输入关键词' />
+            <Input.TextArea autoSize placeholder='请输入关键词，多个以逗号,隔开' />
           )}
         </Form.Item>
       </Form>

@@ -22,6 +22,8 @@ export const getConfigs = (dataInfo, itemList, categoryList) => {
       label: '猜你喜欢',
       antdOptions: {
         mode: 'multiple',
+        showSearch: true,
+        optionFilterProp: 'children',
       },
       decorator: {
         rules: getRules('猜你喜欢'),
@@ -35,6 +37,8 @@ export const getConfigs = (dataInfo, itemList, categoryList) => {
       label: '热销商品',
       antdOptions: {
         mode: 'multiple',
+        showSearch: true,
+        optionFilterProp: 'children',
       },
       decorator: {
         rules: getRules('热销商品'),
@@ -48,6 +52,8 @@ export const getConfigs = (dataInfo, itemList, categoryList) => {
       label: '新品配置',
       antdOptions: {
         mode: 'multiple',
+        showSearch: true,
+        optionFilterProp: 'children',
       },
       decorator: {
         rules: getRules('新品配置'),
@@ -61,6 +67,8 @@ export const getConfigs = (dataInfo, itemList, categoryList) => {
       label: '类目配置',
       antdOptions: {
         mode: 'multiple',
+        showSearch: true,
+        optionFilterProp: 'children',
       },
       decorator: {
         rules: getRules('类目配置'),
@@ -106,7 +114,7 @@ export const getColumnConfig = (handle) => {
       title: '配置名称',
       dataIndex: 'name',
       align: 'center',
-      width: 120,
+      width: 180,
       fixed: 'left'
     },
     {
@@ -137,7 +145,7 @@ export const getColumnConfig = (handle) => {
       title: '更新时间',
       dataIndex: 'updateTime',
       align: 'center',
-      width: 180
+      width: 120
     },
     {
       title: '操作',

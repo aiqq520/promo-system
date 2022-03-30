@@ -1,5 +1,7 @@
 import React from 'react'
-import { Button, Popconfirm } from 'antd'
+import { Button, Popconfirm, Typography, Tooltip } from 'antd'
+
+const { Paragraph } = Typography
 
 export const shelfMap = {
   0: '下架',
@@ -12,7 +14,12 @@ export const searchConfigs = (categoryList) => {
       key: 'categoryId',
       label: '前台类目',
       type: 'select',
-      items: categoryList
+      items: categoryList,
+      antdOptions: {
+        allowClear: true,
+        showSearch: true,
+        optionFilterProp: 'children',
+      }
     },
     {
       key: 'title',
@@ -42,7 +49,6 @@ export function getColumnConfigs(handle) {
       align: 'center',
       fixed: 'left',
       width: 140,
-      ellipsis: true,
     },
     {
       title: '商品货号',
@@ -72,25 +78,37 @@ export function getColumnConfigs(handle) {
       title: '关键词',
       dataIndex: 'keyword',
       align: 'center',
-      width: 120
+      width: 100,
+      render: (text) => (
+        <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
+      )
     },
     {
       title: '商品描述',
       dataIndex: 'description',
       align: 'center',
-      width: 120
+      width: 120,
+      render: (text) => (
+        <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
+      )
     },
     {
       title: '商品扩展信息',
       dataIndex: 'extra',
       align: 'center',
-      width: 120
+      width: 120,
+      render: (text) => (
+        <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
+      )
     },
     {
       title: '概要',
       dataIndex: 'features',
       align: 'center',
-      width: 100
+      width: 100,
+      render: (text) => (
+        <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
+      )
     },
     {
       title: 'logo尺寸',
@@ -118,23 +136,19 @@ export function getColumnConfigs(handle) {
     },
     {
       title: '商品图片',
-      dataIndex: 'itemImageVOList',
+      dataIndex: 'mainImage',
       align: 'center',
-      width: 100,
+      width: 120,
       render: (text) => {
-        const { url } = (text && text[0] || {})
-        return (url ? <img src={url} style={{ width: 80, height: 80 }} alt=''/> : null)
+        return (text ? <img src={text} style={{ width: 80, height: 80 }} alt=''/> : null)
       }
     },
     {
-      title: '商品价格',
-      dataIndex: 'itemPriceVOList',
+      title: '商品价格（分）',
+      dataIndex: 'price',
       align: 'center',
-      width: 100,
-      render: (text) => {
-        const arr = text && text.map(item => item.price)
-        return <>{arr && arr.join()}</>
-      }
+      width: 140,
+      render: (text, record) => <span>{record.lowPrice} - {record.highPrice}</span>
     },
     {
       title: '材质',
@@ -164,7 +178,7 @@ export function getColumnConfigs(handle) {
       title: '状态',
       dataIndex: 'shelf',
       align: 'center',
-      width: 120,
+      width: 100,
       render: (text) => <>{shelfMap[text] || ''}</>
     },
     {
@@ -207,7 +221,7 @@ export function getColumnConfigs(handle) {
       title: '更新时间',
       dataIndex: 'updateTime',
       align: 'center',
-      width: 180
+      width: 120
     },
     {
       title: '操作',

@@ -37,11 +37,15 @@ export const getFormModules = (dataInfo, enmuList) => {
             }],
             initialValue: dataInfo && dataInfo.categoryId || undefined
           },
-          items: categoryList
+          items: categoryList,
+          antdOptions: {
+            showSearch: true,
+            optionFilterProp: 'children'
+          }
         },
         {
           key: 'description',
-          type: 'input',
+          type: 'textarea',
           label: '商品描述',
           decorator: {
             rules: getRules('商品描述'),
@@ -50,7 +54,7 @@ export const getFormModules = (dataInfo, enmuList) => {
         },
         {
           key: 'extra',
-          type: 'input',
+          type: 'textarea',
           label: '商品扩展信息',
           decorator: {
             rules: getRules('商品扩展信息'),
@@ -59,7 +63,7 @@ export const getFormModules = (dataInfo, enmuList) => {
         },
         {
           key: 'features',
-          type: 'input',
+          type: 'textarea',
           label: '概要',
           decorator: {
             rules: getRules('概要'),
@@ -78,14 +82,23 @@ export const getFormModules = (dataInfo, enmuList) => {
         {
           key: 'itemPriceRequests',
           type: 'input',
-          label: '商品价格',
+          label: '商品价格（分）',
           decorator: {
             rules: getRules('商品价格'),
             initialValue: dataInfo && dataInfo.itemPriceRequests || undefined
           },
           antdOptions: {
-            placeholder: '请输入商品价格，以逗号隔开'
+            placeholder: '请输入商品价格，以逗号,隔开'
           }
+        },
+        {
+          key: 'setupCharge',
+          type: 'input',
+          label: '订制费用',
+          decorator: {
+            rules: getRules('订制费用'),
+            initialValue: dataInfo && dataInfo.setupCharge || undefined
+          },
         }
       ]
     },
@@ -100,7 +113,11 @@ export const getFormModules = (dataInfo, enmuList) => {
             rules: getRules('材质'),
             initialValue: dataInfo && dataInfo.material || undefined
           },
-          items: materialList
+          items: materialList,
+          antdOptions: {
+            showSearch: true,
+            optionFilterProp: 'children'
+          }
         },
         {
           key: 'theme',
@@ -110,7 +127,11 @@ export const getFormModules = (dataInfo, enmuList) => {
             rules: getRules('主题'),
             initialValue: dataInfo && dataInfo.theme || undefined
           },
-          items: themeList
+          items: themeList,
+          antdOptions: {
+            showSearch: true,
+            optionFilterProp: 'children'
+          }
         },
         {
           key: 'imprintingMethods',
@@ -120,7 +141,11 @@ export const getFormModules = (dataInfo, enmuList) => {
             rules: getRules('印刷方式'),
             initialValue: dataInfo && dataInfo.imprintingMethods || undefined
           },
-          items: methodsList
+          items: methodsList,
+          antdOptions: {
+            showSearch: true,
+            optionFilterProp: 'children'
+          }
         },
       ]
     },
@@ -170,15 +195,6 @@ export const getFormModules = (dataInfo, enmuList) => {
           decorator: {
             rules: getRules('产品尺寸'),
             initialValue: dataInfo && dataInfo.productSize || undefined
-          },
-        },
-        {
-          key: 'setupCharge',
-          type: 'input',
-          label: '订制费用',
-          decorator: {
-            rules: getRules('订制费用'),
-            initialValue: dataInfo && dataInfo.setupCharge || undefined
           },
         },
         {
