@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Spin, Card, Input, Form, Select, Button, Radio, message } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Spin, Card, Input, Form, Select, Button, Radio, message, InputNumber, Table, Popconfirm } from 'antd'
 import UploadImage from '@/components/Upload'
 import { getFormModules } from '../config'
 import { postSave, postUpdate } from '@/services/item'
@@ -11,17 +11,51 @@ const formItemLayout = {
 
 function FormElement(props) {
   const [btnloading, setBtnLoading] = useState(false)
+  const [dataList, setDataList] = useState([{ price: undefined, level: undefined }])
 
+  useEffect(() => {
+    if (props.dataInfo && props.dataInfo.id) {
+      setDataList(props.dataInfo.itemPriceRequests)
+    }
+  }, [props.dataInfo])
+
+  // 添加
+  const handleAdd = () => {
+    const rawData = [...dataList]
+    rawData.push({ price: undefined, level: undefined })
+    setDataList(rawData)
+  }
+
+  // 删除
+  const handleDelete = (index) => {
+    const { getFieldValue, setFieldsValue } = props.form
+    const rawPriceList = getFieldValue('itemPriceRequests')
+    const rawList = [...dataList]
+
+    if (rawList && rawList.length === 1) {
+      message.error('至少添加一条数据')
+      return
+    }
+
+    setFieldsValue({
+      itemPriceRequests: rawPriceList && rawPriceList.filter((v, key) => key !== index)
+    })
+
+    const arr = rawList && rawList.filter((v, i) => i !== index)
+    setDataList(arr)
+  }
+
+  // 提交
   const handleSubmit = () => {
     const { validateFieldsAndScroll } = props.form
     validateFieldsAndScroll(async (err, values) => {
       if (err) return
+
       setBtnLoading(true)
       const { dataInfo } = props
-      const { itemImageRequestList: list, itemPriceRequests } = values
+      const { itemImageRequestList: list } = values
       const data = JSON.parse(JSON.stringify(values))
       data.itemImageRequestList = list && list.map((item) => ({ url: item }))
-      data.itemPriceRequests = itemPriceRequests.toString().split(',').map(item => ({ price: item }))
 
       data.id = dataInfo && dataInfo.id || undefined
       data.version = dataInfo && dataInfo.version
@@ -43,6 +77,58 @@ function FormElement(props) {
   const enumList = { categoryList, materialList, themeList, methodsList }
   const modules = getFormModules(dataInfo, enumList)
   const { getFieldDecorator } = props.form
+
+  const columns = [
+    {
+      title: '价格(分)',
+      dataIndex: 'price',
+      align: 'center',
+      render: (text, record, index) => (
+        <Form.Item style={{ marginBottom: 0 }}>
+          {getFieldDecorator(`itemPriceRequests[${index}].price`, {
+            rules: [{
+              required: true,
+              message: '请输入商品价格'
+            }],
+            initialValue: record.price
+          })(<InputNumber placeholder='请输入商品价格' style={{ width: '100%' }} />)}
+        </Form.Item>
+      )
+    },
+    {
+      title: '数量',
+      dataIndex: 'level',
+      align: 'center',
+      render: (text, record, index) => (
+        <Form.Item style={{ marginBottom: 0 }}>
+          {getFieldDecorator(`itemPriceRequests[${index}].level`, {
+            rules: [{
+              required: true,
+              message: '请输入商品数量'
+            }],
+            initialValue: record.level
+          })(<InputNumber placeholder='请输入商品数量' style={{ width: '100%' }} />)}
+        </Form.Item>
+      )
+    },
+    {
+      title: '操作',
+      dataIndex: 'operate',
+      align: 'center',
+      className: 'ant-table-cell-option',
+      render: (text, record, index) => {
+        const len = dataList && dataList.length
+        return (
+          <div style={{ textAlign: 'center' }}>
+            <Popconfirm title='确认删除？' onConfirm={() => handleDelete(index)}>
+              <Button type='link'>删除</Button>
+            </Popconfirm>
+            {((index + 1) === len) && <Button type='link' onClick={() => handleAdd()}>添加</Button>}
+          </div>
+        )
+      }
+    }
+  ]
 
   return (
     <Spin spinning={loading}>
@@ -72,8 +158,8 @@ function FormElement(props) {
                                   placeholder={label && `请选择${label}`}
                                   optionLabelProp='label'
                                 >
-                                  {items && items.map((v, index) => (
-                                    <Select.Option value={v.id} key={index} label={v.name}>
+                                  {items && items.map((v) => (
+                                    <Select.Option value={v.id} key={v.id} label={v.name}>
                                       {v.description ? `${v.name} - ${v.description}` : `${v.name}`}
                                     </Select.Option>
                                   ))}
@@ -82,6 +168,17 @@ function FormElement(props) {
                             case 'upload':
                               return (
                                 <UploadImage />
+                              )
+                            case 'price':
+                              return (
+                                <Table
+                                  bordered
+                                  columns={columns}
+                                  rowClassName={() => 'editable-row'}
+                                  dataSource={dataList}
+                                  pagination={false}
+                                  rowKey={(r, _i) => _i.toString()}
+                                />
                               )
                             default:
                               return <Input {...antdOptions} />

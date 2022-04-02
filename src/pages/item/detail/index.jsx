@@ -42,7 +42,7 @@ function ItemDetail(props) {
       const data = JSON.parse(JSON.stringify(res && res.data)) || {}
       const { itemImageVOList, itemPriceVOList } = (data || {})
       data.itemImageRequestList = itemImageVOList && itemImageVOList.map(item => item.url)
-      data.itemPriceRequests = itemPriceVOList && itemPriceVOList.map(item => item.price).join()
+      data.itemPriceRequests = itemPriceVOList
       setDataInfo(data)
     }
   }

@@ -79,17 +79,22 @@ export const getFormModules = (dataInfo, enmuList) => {
             initialValue: dataInfo && dataInfo.itemImageRequestList || undefined
           }
         },
+        // {
+        //   key: 'itemPriceRequests',
+        //   type: 'input',
+        //   label: '商品价格（分）',
+        //   decorator: {
+        //     rules: getRules('商品价格'),
+        //     initialValue: dataInfo && dataInfo.itemPriceRequests || undefined
+        //   },
+        //   antdOptions: {
+        //     placeholder: '请输入商品价格，以逗号,隔开'
+        //   }
+        // },
         {
-          key: 'itemPriceRequests',
-          type: 'input',
-          label: '商品价格（分）',
-          decorator: {
-            rules: getRules('商品价格'),
-            initialValue: dataInfo && dataInfo.itemPriceRequests || undefined
-          },
-          antdOptions: {
-            placeholder: '请输入商品价格，以逗号,隔开'
-          }
+          key: 'price',
+          type: 'price',
+          label: '商品价格/数量',
         },
         {
           key: 'setupCharge',
