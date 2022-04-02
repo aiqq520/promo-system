@@ -71,6 +71,15 @@ export const getFormModules = (dataInfo, enmuList) => {
           }
         },
         {
+          key: 'keyword',
+          type: 'input',
+          label: '商品关键词',
+          decorator: {
+            rules: getRules('商品关键词'),
+            initialValue: dataInfo && dataInfo.keyword || undefined
+          }
+        },
+        {
           key: 'itemImageRequestList',
           type: 'upload',
           label: '商品图片',
