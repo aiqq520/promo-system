@@ -3,7 +3,7 @@ export const getRules = (text) => {
 }
 
 export const getFormModules = (dataInfo, enmuList) => {
-  const { categoryList, materialList, themeList, methodsList } = enmuList
+  const { categoryList } = enmuList
   const modules = [
     {
       moduleName: '商品基本信息',
@@ -11,25 +11,31 @@ export const getFormModules = (dataInfo, enmuList) => {
         {
           key: 'title',
           type: 'input',
-          label: '商品名称',
+          label: 'Item Name',
           decorator: {
             rules: getRules('商品名称'),
             initialValue: dataInfo && dataInfo.title || undefined
           },
+          antdOptions: {
+            placeholder: '请输入商品名称'
+          }
         },
         {
           key: 'itemSn',
           type: 'input',
-          label: '商品货号',
+          label: 'Item No.',
           decorator: {
             rules: getRules('商品货号'),
             initialValue: dataInfo && dataInfo.itemSn || undefined
           },
+          antdOptions: {
+            placeholder: '请输入商品货号'
+          }
         },
         {
           key: 'categoryId',
           type: 'select',
-          label: '平台类别',
+          label: 'Category',
           decorator: {
             rules: [{
               required: true,
@@ -40,49 +46,59 @@ export const getFormModules = (dataInfo, enmuList) => {
           items: categoryList,
           antdOptions: {
             showSearch: true,
-            optionFilterProp: 'children'
+            optionFilterProp: 'children',
+            placeholder: '请选择平台类别'
           }
         },
         {
           key: 'description',
           type: 'textarea',
-          label: '商品描述',
+          label: 'Item Description',
           decorator: {
             rules: getRules('商品描述'),
             initialValue: dataInfo && dataInfo.description || undefined
+          },
+          antdOptions: {
+            placeholder: '请输入商品描述'
           }
         },
-        {
-          key: 'extra',
-          type: 'textarea',
-          label: '商品扩展信息',
-          decorator: {
-            rules: getRules('商品扩展信息'),
-            initialValue: dataInfo && dataInfo.extra || undefined
-          }
-        },
+        // {
+        //   key: 'extra',
+        //   type: 'textarea',
+        //   label: '商品扩展信息',
+        //   decorator: {
+        //     rules: getRules('商品扩展信息'),
+        //     initialValue: dataInfo && dataInfo.extra || undefined
+        //   }
+        // },
         {
           key: 'features',
           type: 'textarea',
-          label: '概要',
+          label: 'Features',
           decorator: {
             rules: getRules('概要'),
             initialValue: dataInfo && dataInfo.features || undefined
+          },
+          antdOptions: {
+            placeholder: '请输入概要'
           }
         },
         {
           key: 'keyword',
           type: 'input',
-          label: '商品关键词',
+          label: 'Key Words',
           decorator: {
             rules: getRules('商品关键词'),
             initialValue: dataInfo && dataInfo.keyword || undefined
+          },
+          antdOptions: {
+            placeholder: '请输入商品关键词'
           }
         },
         {
           key: 'itemImageRequestList',
           type: 'upload',
-          label: '商品图片',
+          label: 'Images',
           decorator: {
             rules: [{ required: true, message: '请上传商品图片' }],
             initialValue: dataInfo && dataInfo.itemImageRequestList || undefined
@@ -103,16 +119,19 @@ export const getFormModules = (dataInfo, enmuList) => {
         {
           key: 'price',
           type: 'price',
-          label: '商品价格/数量',
+          label: '商品价格/数量/时间',
         },
         {
           key: 'setupCharge',
           type: 'input',
-          label: '订制费用',
+          label: 'Set Up Charge',
           decorator: {
-            rules: getRules('订制费用'),
+            rules: getRules('打样费'),
             initialValue: dataInfo && dataInfo.setupCharge || undefined
           },
+          antdOptions: {
+            placeholder: '请输入打样费'
+          }
         }
       ]
     },
@@ -121,44 +140,46 @@ export const getFormModules = (dataInfo, enmuList) => {
       components: [
         {
           key: 'material',
-          type: 'select',
-          label: '材质',
+          type: 'input',
+          label: 'Material',
           decorator: {
             rules: getRules('材质'),
             initialValue: dataInfo && dataInfo.material || undefined
           },
-          items: materialList,
+          // items: materialList,
           antdOptions: {
-            showSearch: true,
-            optionFilterProp: 'children'
+            // showSearch: true,
+            // optionFilterProp: 'children',
+            placeholder: '请选择材质'
           }
         },
-        {
-          key: 'theme',
-          type: 'select',
-          label: '主题',
-          decorator: {
-            rules: getRules('主题'),
-            initialValue: dataInfo && dataInfo.theme || undefined
-          },
-          items: themeList,
-          antdOptions: {
-            showSearch: true,
-            optionFilterProp: 'children'
-          }
-        },
+        // {
+        //   key: 'theme',
+        //   type: 'select',
+        //   label: '主题',
+        //   decorator: {
+        //     rules: getRules('主题'),
+        //     initialValue: dataInfo && dataInfo.theme || undefined
+        //   },
+        //   items: themeList,
+        //   antdOptions: {
+        //     showSearch: true,
+        //     optionFilterProp: 'children'
+        //   }
+        // },
         {
           key: 'imprintingMethods',
-          type: 'select',
-          label: '印刷方式',
+          type: 'input',
+          label: 'Imprint Method',
           decorator: {
             rules: getRules('印刷方式'),
             initialValue: dataInfo && dataInfo.imprintingMethods || undefined
           },
-          items: methodsList,
+          // items: methodsList,
           antdOptions: {
-            showSearch: true,
-            optionFilterProp: 'children'
+            // showSearch: true,
+            // optionFilterProp: 'children',
+            placeholder: '请选择印刷方式'
           }
         },
       ]
@@ -169,47 +190,59 @@ export const getFormModules = (dataInfo, enmuList) => {
         {
           key: 'imprintSize',
           type: 'input',
-          label: 'logo尺寸',
+          label: 'Imprint Size',
           decorator: {
             rules: getRules('logo尺寸'),
             initialValue: dataInfo && dataInfo.imprintSize || undefined
           },
+          antdOptions: {
+            placeholder: '请输入logo尺寸'
+          }
         },
-        {
-          key: 'imprintLocation',
-          type: 'input',
-          label: '印刷位置',
-          decorator: {
-            rules: getRules('印刷位置'),
-            initialValue: dataInfo && dataInfo.imprintLocation || undefined
-          },
-        },
+        // {
+        //   key: 'imprintLocation',
+        //   type: 'input',
+        //   label: '印刷位置',
+        //   decorator: {
+        //     rules: getRules('印刷位置'),
+        //     initialValue: dataInfo && dataInfo.imprintLocation || undefined
+        //   },
+        // },
         {
           key: 'insidePacking',
           type: 'input',
-          label: '产品包装方式',
+          label: 'Packing',
           decorator: {
             rules: getRules('产品包装方式'),
             initialValue: dataInfo && dataInfo.insidePacking || undefined
           },
+          antdOptions: {
+            placeholder: '请输入产品包装方式'
+          }
         },
         {
           key: 'productColor',
           type: 'input',
-          label: '产品颜色',
+          label: 'Colors',
           decorator: {
             rules: getRules('产品颜色'),
             initialValue: dataInfo && dataInfo.productColor || undefined
           },
+          antdOptions: {
+            placeholder: '请输入产品颜色'
+          }
         },
         {
           key: 'productSize',
           type: 'input',
-          label: '产品尺寸',
+          label: 'Spec.',
           decorator: {
             rules: getRules('产品尺寸'),
             initialValue: dataInfo && dataInfo.productSize || undefined
           },
+          antdOptions: {
+            placeholder: '请输入产品尺寸'
+          }
         },
         {
           key: 'packageCount',
@@ -256,6 +289,17 @@ export const getFormModules = (dataInfo, enmuList) => {
             initialValue: dataInfo && dataInfo.shippingDimensionsWidth || undefined
           },
         },
+        {
+          key: 'importantNote',
+          type: 'textarea',
+          label: 'Important Note',
+          decorator: {
+            initialValue: dataInfo && dataInfo.importantNote || undefined
+          },
+          antdOptions: {
+            placeholder: '请输入Important Note'
+          }
+        }
       ]
     }
   ]

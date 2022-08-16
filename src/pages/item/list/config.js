@@ -19,6 +19,7 @@ export const searchConfigs = (categoryList) => {
         allowClear: true,
         showSearch: true,
         optionFilterProp: 'children',
+        dropdownMatchSelectWidth: false
       }
     },
     {
@@ -49,6 +50,15 @@ export function getColumnConfigs(handle) {
       align: 'center',
       fixed: 'left',
       width: 140,
+    },
+    {
+      title: '商品图片',
+      dataIndex: 'mainImage',
+      align: 'center',
+      width: 120,
+      render: (text) => {
+        return (text ? <img src={text} style={{ width: 80, height: 80 }} alt='' /> : null)
+      }
     },
     {
       title: '商品货号',
@@ -92,15 +102,15 @@ export function getColumnConfigs(handle) {
         <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
       )
     },
-    {
-      title: '商品扩展信息',
-      dataIndex: 'extra',
-      align: 'center',
-      width: 120,
-      render: (text) => (
-        <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
-      )
-    },
+    // {
+    //   title: '商品扩展信息',
+    //   dataIndex: 'extra',
+    //   align: 'center',
+    //   width: 120,
+    //   render: (text) => (
+    //     <Tooltip title={text}><Paragraph ellipsis>{text}</Paragraph></Tooltip>
+    //   )
+    // },
     {
       title: '概要',
       dataIndex: 'features',
@@ -116,12 +126,12 @@ export function getColumnConfigs(handle) {
       align: 'center',
       width: 100
     },
-    {
-      title: '印刷位置',
-      dataIndex: 'imprintLocation',
-      align: 'center',
-      width: 100
-    },
+    // {
+    //   title: '印刷位置',
+    //   dataIndex: 'imprintLocation',
+    //   align: 'center',
+    //   width: 100
+    // },
     {
       title: '印刷方式',
       dataIndex: 'imprintingMethods',
@@ -135,16 +145,7 @@ export function getColumnConfigs(handle) {
       width: 120
     },
     {
-      title: '商品图片',
-      dataIndex: 'mainImage',
-      align: 'center',
-      width: 120,
-      render: (text) => {
-        return (text ? <img src={text} style={{ width: 80, height: 80 }} alt=''/> : null)
-      }
-    },
-    {
-      title: '商品价格（分）',
+      title: '商品价格（元）',
       dataIndex: 'price',
       align: 'center',
       width: 140,
@@ -211,12 +212,12 @@ export function getColumnConfigs(handle) {
       align: 'center',
       width: 120
     },
-    {
-      title: '主题',
-      dataIndex: 'theme',
-      align: 'center',
-      width: 100
-    },
+    // {
+    //   title: '主题',
+    //   dataIndex: 'theme',
+    //   align: 'center',
+    //   width: 100
+    // },
     {
       title: '更新时间',
       dataIndex: 'updateTime',

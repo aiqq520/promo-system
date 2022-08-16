@@ -4,14 +4,24 @@ import UploadImage from '@/components/Upload'
 import { getFormModules } from '../config'
 import { postSave, postUpdate } from '@/services/item'
 
+// 默认数据
+const DEFAULT_DATA = {
+  price: undefined,
+  level: undefined,
+  productTime: undefined
+}
+
+// 默认数组
+const DEFAULT_ARR = new Array(5).fill(DEFAULT_DATA)
+
 const formItemLayout = {
   labelCol: { span: 4 },
-  wrapperCol: { span: 12 }
+  wrapperCol: { span: 16 }
 }
 
 function FormElement(props) {
   const [btnloading, setBtnLoading] = useState(false)
-  const [dataList, setDataList] = useState([{ price: undefined, level: undefined }])
+  const [dataList, setDataList] = useState(DEFAULT_ARR)
 
   useEffect(() => {
     if (props.dataInfo && props.dataInfo.id) {
@@ -22,7 +32,7 @@ function FormElement(props) {
   // 添加
   const handleAdd = () => {
     const rawData = [...dataList]
-    rawData.push({ price: undefined, level: undefined })
+    rawData.push({ price: undefined, level: undefined, productTime: undefined })
     setDataList(rawData)
   }
 
@@ -59,6 +69,10 @@ function FormElement(props) {
 
       data.id = dataInfo && dataInfo.id || undefined
       data.version = dataInfo && dataInfo.version
+      data.extra = ''
+      data.theme = ''
+      data.imprintLocation = ''
+
       const isUpdate = !!(dataInfo && dataInfo.id)
       const res = isUpdate ? await postUpdate(data) : await postSave(data)
       setBtnLoading(false)
@@ -73,14 +87,14 @@ function FormElement(props) {
     props.handleCancel()
   }
 
-  const { loading, dataInfo, categoryList, materialList, themeList, methodsList } = props
-  const enumList = { categoryList, materialList, themeList, methodsList }
+  const { loading, dataInfo, categoryList } = props
+  const enumList = { categoryList }
   const modules = getFormModules(dataInfo, enumList)
   const { getFieldDecorator } = props.form
 
   const columns = [
     {
-      title: '价格(分)',
+      title: '价格(元)',
       dataIndex: 'price',
       align: 'center',
       render: (text, record, index) => (
@@ -108,6 +122,22 @@ function FormElement(props) {
             }],
             initialValue: record.level
           })(<InputNumber placeholder='请输入商品数量' style={{ width: '100%' }} />)}
+        </Form.Item>
+      )
+    },
+    {
+      title: '时间',
+      dataIndex: 'productTime',
+      align: 'center',
+      render: (text, record, index) => (
+        <Form.Item style={{ marginBottom: 0 }}>
+          {getFieldDecorator(`itemPriceRequests[${index}].productTime`, {
+            rules: [{
+              required: true,
+              message: '请输入做货时间'
+            }],
+            initialValue: record.productTime
+          })(<InputNumber placeholder='请输入做货时间' style={{ width: '100%' }} />)}
         </Form.Item>
       )
     },
@@ -154,9 +184,9 @@ function FormElement(props) {
                             case 'select':
                               return (
                                 <Select
-                                  {...antdOptions}
                                   placeholder={label && `请选择${label}`}
                                   optionLabelProp='label'
+                                  {...antdOptions}
                                 >
                                   {items && items.map((v) => (
                                     <Select.Option value={v.id} key={v.id} label={v.name}>
@@ -197,7 +227,7 @@ function FormElement(props) {
           <Form.Item {...formItemLayout} label='状态'>
             {getFieldDecorator('shelf', {
               rules: [{ required: true, message: '请选择上下架状态' }],
-              initialValue: dataInfo && dataInfo.shelf || undefined
+              initialValue: dataInfo.shelf
             })(
               <Radio.Group>
                 <Radio value={0}>下架</Radio>

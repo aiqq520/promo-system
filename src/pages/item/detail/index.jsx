@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { router } from 'umi';
 import FormElement from './components/FormElement'
 import { queryCategoryList } from '@/services/category'
-import { queryBaseDataList } from '@/services/basedata'
+// import { queryBaseDataList } from '@/services/basedata'
 import { getItemInfo } from '@/services/item'
 
 function ItemDetail(props) {
   const [categoryList, setCategoryList] = useState([]) // 类目
-  const [materialList, setMaterialList] = useState([]) // 材质
-  const [themeList, setThemeList] = useState([]) // 主题
-  const [methodsList, setMethodsList] = useState([]) // 印刷方式
+  // const [materialList, setMaterialList] = useState([]) // 材质
+  // const [themeList, setThemeList] = useState([]) // 主题
+  // const [methodsList, setMethodsList] = useState([]) // 印刷方式
   const [dataInfo, setDataInfo] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -20,18 +20,18 @@ function ItemDetail(props) {
     setCategoryList(rows || [])
   }
 
-  const getBaseList = async () => {
-    const params = { page: 1, size: 10000 }
-    const res = await queryBaseDataList(params)
-    const { rows } = (res && res.data || {})
-    const list1 = rows && rows.filter(item => item.type === 1) || [] // 材质
-    const list2 = rows && rows.filter(item => item.type === 2) || [] // 主题
-    const list3 = rows && rows.filter(item => item.type === 3) || [] // 印刷方式
+  // const getBaseList = async () => {
+  //   const params = { page: 1, size: 10000 }
+  //   const res = await queryBaseDataList(params)
+  //   const { rows } = (res && res.data || {})
+  //   const list1 = rows && rows.filter(item => item.type === 1) || [] // 材质
+  //   const list2 = rows && rows.filter(item => item.type === 2) || [] // 主题
+  //   const list3 = rows && rows.filter(item => item.type === 3) || [] // 印刷方式
 
-    setMaterialList(list1)
-    setThemeList(list2)
-    setMethodsList(list3)
-  }
+  //   setMaterialList(list1)
+  //   setThemeList(list2)
+  //   setMethodsList(list3)
+  // }
 
   const getItemInfos = async () => {
     const { id } = props.location && props.location.query
@@ -49,7 +49,7 @@ function ItemDetail(props) {
 
   useEffect(() => {
     getEmunList()
-    getBaseList()
+    // getBaseList()
     getItemInfos()
   }, [])
 
@@ -65,9 +65,9 @@ function ItemDetail(props) {
         loading={loading}
         dataInfo={dataInfo}
         categoryList={categoryList}
-        materialList={materialList}
-        themeList={themeList}
-        methodsList={methodsList}
+        // materialList={materialList}
+        // themeList={themeList}
+        // methodsList={methodsList}
         handleCancel={handleCancel}
       />
     </>
